@@ -16,7 +16,6 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 
 	private int totalMessages = -1;
 	private int[] receivedMessages;
-	private int count = 0;
 	private int miss_count = 0;
 
 	public RMIServer() throws RemoteException {
@@ -25,32 +24,32 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 	public void receiveMessage(MessageInfo msg) throws RemoteException {
 		System.err.println("Received: " + msg.toString());
 		// TO-DO: On receipt of first message, initialise the receive buffer
-		if(count==0) {
+		if(totalMessages==-1) {
 			totalMessages=msg.totalMessages;
 			receivedMessages = new int[totalMessages];
 		}
 		// TO-DO: Log receipt of the message
-		receivedMessages[count++]=msg.messageNum;
+		receivedMessages[msg.messageNum-1]=msg.messageNum;
 		// TO-DO: If this is the last expected message, then identify
 		//        any missing messages
-		if(count==totalMessages) {
+		if(msg.messageNum==totalMessages) {
 			for(int i=0;i<totalMessages;i++) {
 				if(receivedMessages[i]!=i+1) {
 					System.out.println("Missing: " + (i+1));
 					miss_count++;
 				}
 			}
-			System.out.println("\n"+"Received "+(count-miss_count));
+			System.out.println("\n"+"Received "+(totalMessages-miss_count));
 			System.out.println("Missed "+(miss_count));
-			System.out.println("Miss "+(100*miss_count/count)+"%");
+			System.out.println("Miss "+(100*miss_count/totalMessages)+"%");
 			//System.exit(0);
 		}
 	}
 
 
 	public static void main(String[] args) {
-
 		RMIServer rmis = null;
+		System.setProperty("java.rmi.server.hostname","35.246.42.180");
 
 		// TO-DO: Initialise Security Manager
 		if(System.getSecurityManager() == null) {
@@ -62,7 +61,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		rmis= new RMIServer();
 		System.out.println("Server class Instantiated");
 		// TO-DO: Bind to RMI registry
-		rebindServer("rmi://localhost:1234/RMIServer", rmis);
+		rebindServer("rmi://192.168.0.60:1234/RMIServer", rmis);
 		System.out.println("Bind successful");
 		}catch(RemoteException e) {
 			System.out.println("Remote Exception:" + e.getMessage());
