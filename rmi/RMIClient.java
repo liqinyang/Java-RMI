@@ -30,11 +30,14 @@ public class RMIClient {
 			if(System.getSecurityManager() == null) {
 				System.setSecurityManager(new SecurityManager());
 			}
+			System.out.println("Security Manager ready");
 			// TO-DO: Bind to RMIServer
 			iRMIServer=(RMIServerI) Naming.lookup(urlServer);
+			System.out.println("Bind successful");
 			// TO-DO: Attempt to send messages the specified number of times
 			for(int i = 0; i < numMessages; i++) {
 				MessageInfo msg= new MessageInfo(numMessages,i+1);
+				System.err.println("Try Sending: " + msg.toString());
 				iRMIServer.receiveMessage(msg);
 				System.err.println("Sent: " + msg.toString());
 			}

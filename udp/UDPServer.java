@@ -16,7 +16,6 @@ public class UDPServer {
 
 	private DatagramSocket recvSoc;
 	private int totalMessages = -1;
-	private int count = 0;
 	private int miss_count = 0;
 	private int[] receivedMessages;
 	private boolean close;
@@ -41,6 +40,15 @@ public class UDPServer {
 			System.out.println("Socket: " + e.getMessage());
 		}catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
+			for(int i=0;i<totalMessages;i++) {
+				if(receivedMessages[i]!=i+1) {
+					System.out.println("Missing: " + (i+1));
+					miss_count++;
+				}
+			}
+			System.out.println("\n"+"Received "+(totalMessages-miss_count));
+			System.out.println("Missed "+(miss_count));
+			System.out.println("Miss "+(100*miss_count/totalMessages)+"%");
 		}
 		//        Use a timeout (e.g. 30 secs) to ensure the program doesn't block forever
 
@@ -55,13 +63,12 @@ public class UDPServer {
 		try {
 			msg = new MessageInfo(data);
 			// TO-DO: On receipt of first message, initialise the receive buffer
-			if(count==0) {
+			if(totalMessages==-1) {
 				totalMessages=msg.totalMessages;
 				receivedMessages = new int[totalMessages];
 			}
 			// TO-DO: Log receipt of the message
 			receivedMessages[msg.messageNum-1]=msg.messageNum;
-			count++;
 			// TO-DO: If this is the last expected message, then identify
 			//        any missing messages
 			if(msg.messageNum==totalMessages) {
@@ -72,9 +79,9 @@ public class UDPServer {
 						miss_count++;
 					}
 				}
-				System.out.println("\n"+"Received "+(count-miss_count));
+				System.out.println("\n"+"Received "+(totalMessages-miss_count));
 				System.out.println("Missed "+(miss_count));
-				System.out.println("Miss "+(100*miss_count/count)+"%");
+				System.out.println("Miss "+(100*miss_count/totalMessages)+"%");
 			}
 		}catch (Exception e){
 			System.out.println("Exception: " + e.getMessage());
@@ -107,6 +114,7 @@ public class UDPServer {
 		// TO-DO: Construct Server object and start it by calling run().
 		UDPServer s= new UDPServer(recvPort);
 		s.run();
+		
 	}
 
 }
