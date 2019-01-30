@@ -60,10 +60,11 @@ public class UDPServer {
 				receivedMessages = new int[totalMessages];
 			}
 			// TO-DO: Log receipt of the message
-			receivedMessages[count++]=msg.messageNum;
+			receivedMessages[msg.messageNum-1]=msg.messageNum;
+			count++;
 			// TO-DO: If this is the last expected message, then identify
 			//        any missing messages
-			if(count==totalMessages) {
+			if(msg.messageNum==totalMessages) {
 				close=true;
 				for(int i=0;i<totalMessages;i++) {
 					if(receivedMessages[i]!=i+1) {
