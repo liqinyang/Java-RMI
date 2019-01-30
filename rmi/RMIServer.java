@@ -4,6 +4,7 @@
 package rmi;
 
 import java.net.MalformedURLException;
+import java.net.InetAddress;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
@@ -61,10 +62,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		rmis= new RMIServer();
 		System.out.println("Server class Instantiated");
 		// TO-DO: Bind to RMI registry
-		rebindServer("rmi://192.168.0.60:1234/RMIServer", rmis);
+		String hostIP = InetAddress.getLocalHost().getHostAddress();
+		
+		rebindServer("rmi://"+hostIP+":1234/RMIServer", rmis);
 		System.out.println("Bind successful");
 		}catch(RemoteException e) {
 			System.out.println("Remote Exception:" + e.getMessage());
+		}
+		catch(Exception e) {
+			System.out.println("Exception:" + e.getMessage());
 		}
 	}
 
