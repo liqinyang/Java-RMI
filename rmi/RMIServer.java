@@ -63,9 +63,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		System.out.println("Server class Instantiated");
 		// TO-DO: Bind to RMI registry
 		String hostIP = InetAddress.getLocalHost().getHostAddress();
-		
+		System.out.println("Local IP: "+hostIP);
 		rebindServer("rmi://"+hostIP+":1234/RMIServer", rmis);
-		System.out.println("Bind successful");
 		}catch(RemoteException e) {
 			System.out.println("Remote Exception:" + e.getMessage());
 		}
@@ -79,6 +78,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		// TO-DO:
 		// Start / find the registry (hint use LocateRegistry.createRegistry(...)
 		LocateRegistry.createRegistry(1234);
+		System.out.println("Registry created");
 		// If we *know* the registry is running we could skip this (eg run rmiregistry in the start script)
 
 		// TO-DO:
@@ -86,6 +86,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		// Note - Registry.rebind (as returned by createRegistry / getRegistry) does something similar but
 		// expects different things from the URL field.
 		Naming.rebind(serverURL, server);
+		System.out.println("Bind successful");
 		}catch(MalformedURLException e) {
 			System.out.println("Malformed URL Exception:" + e.getMessage());
 		}catch(RemoteException e) {
