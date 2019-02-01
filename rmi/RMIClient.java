@@ -22,7 +22,7 @@ public class RMIClient {
 			System.exit(-1);
 		}
 
-		String urlServer = new String("rmi://" + args[0] + "/RMIServer");
+		String urlServer = new String("rmi://" + args[0] + ":1234/RMIServer");
 		int numMessages = Integer.parseInt(args[1]);
 
 		// TO-DO: Initialise Security Manager

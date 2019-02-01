@@ -9,7 +9,7 @@ import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Arrays;
+//import java.util.Arrays;
 
 import common.*;
 
@@ -43,14 +43,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 			System.out.println("\n"+"Received "+(totalMessages-miss_count));
 			System.out.println("Missed "+(miss_count));
 			System.out.println("Miss "+(100*miss_count/totalMessages)+"%");
-			//System.exit(0);
 		}
 	}
 
 
 	public static void main(String[] args) {
 		RMIServer rmis = null;
-		System.setProperty("java.rmi.server.hostname","35.246.42.180");
+		if(args.length==1) {
+			System.setProperty("java.rmi.server.hostname",args[0]);
+		}
 
 		// TO-DO: Initialise Security Manager
 		if(System.getSecurityManager() == null) {

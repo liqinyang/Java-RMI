@@ -8,7 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
+//import java.util.Arrays;
 
 import common.MessageInfo;
 
@@ -36,19 +36,23 @@ public class UDPServer {
 				recvSoc.receive(pac);
 				processMessage(new String(pac.getData(),0,pac.getLength()));
 			}
+		}catch (SocketTimeoutException e) {
+			System.out.println("Timeout: " + e.getMessage());
+			if(totalMessages!=-1) {
+				for(int i=0;i<totalMessages;i++) {
+					if(receivedMessages[i]!=i+1) {
+						System.out.println("Missing: " + (i+1));
+						miss_count++;
+					}
+				}
+				System.out.println("\n"+"Received "+(totalMessages-miss_count));
+				System.out.println("Missed "+(miss_count));
+				System.out.println("Miss "+(100*miss_count/totalMessages)+"%");
+			}
 		}catch (SocketException e){
 			System.out.println("Socket: " + e.getMessage());
 		}catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
-			for(int i=0;i<totalMessages;i++) {
-				if(receivedMessages[i]!=i+1) {
-					System.out.println("Missing: " + (i+1));
-					miss_count++;
-				}
-			}
-			System.out.println("\n"+"Received "+(totalMessages-miss_count));
-			System.out.println("Missed "+(miss_count));
-			System.out.println("Miss "+(100*miss_count/totalMessages)+"%");
 		}
 		//        Use a timeout (e.g. 30 secs) to ensure the program doesn't block forever
 
