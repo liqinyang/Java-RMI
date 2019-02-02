@@ -39,10 +39,13 @@ public class RMIClient {
 				MessageInfo msg= new MessageInfo(numMessages,i+1);
 				System.err.println("Try Sending: " + msg.toString());
 				iRMIServer.receiveMessage(msg);
+				Thread.sleep(100);
 				System.err.println("Sent: " + msg.toString());
 			}
 		}
 		catch(RemoteException | MalformedURLException | NotBoundException e){
+			System.out.println("Exception:" + e);
+		}catch(Exception e) {
 			System.out.println("Exception:" + e);
 		}
 	}
