@@ -9,7 +9,6 @@ import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-//import java.util.Arrays;
 
 import common.*;
 
@@ -24,15 +23,15 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 
 	public void receiveMessage(MessageInfo msg) throws RemoteException {
 		System.err.println("Received: " + msg.toString());
-		// TO-DO: On receipt of first message, initialise the receive buffer
+		// On receipt of first message, initialise the receive buffer
 		if(totalMessages==-1) {
 			totalMessages=msg.totalMessages;
 			receivedMessages = new int[totalMessages];
 		}
-		// TO-DO: Log receipt of the message
+		//  Log receipt of the message
 		receivedMessages[msg.messageNum-1]=msg.messageNum;
-		// TO-DO: If this is the last expected message, then identify
-		//        any missing messages
+		// If this is the last expected message, then identify
+		// any missing messages
 		if(msg.messageNum==totalMessages) {
 			for(int i=0;i<totalMessages;i++) {
 				if(receivedMessages[i]!=i+1) {
@@ -49,20 +48,21 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 
 	public static void main(String[] args) {
 		RMIServer rmis = null;
-		if(args.length==1) {
-			System.setProperty("java.rmi.server.hostname",args[0]);
-		}
+//		if(args.length==1) {
+//			System.setProperty("java.rmi.server.hostname",args[0]);
+//		}
+		System.setProperty("java.rmi.server.hostname","35.246.42.180");
 
-		// TO-DO: Initialise Security Manager
+		//  Initialise Security Manager
 		if(System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
 		System.out.println("Security Manager ready");
-		// TO-DO: Instantiate the server class
+		// Instantiate the server class
 		try {
 		rmis= new RMIServer();
 		System.out.println("Server class Instantiated");
-		// TO-DO: Bind to RMI registry
+		// Bind to RMI registry
 		String hostIP = InetAddress.getLocalHost().getHostAddress();
 		System.out.println("Local IP: "+hostIP);
 		rebindServer("rmi://"+hostIP+":1234/RMIServer", rmis);
@@ -76,16 +76,12 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 
 	protected static void rebindServer(String serverURL, RMIServer server) {
 		try {
-		// TO-DO:
-		// Start / find the registry (hint use LocateRegistry.createRegistry(...)
+		// Start  the registry 
 		LocateRegistry.createRegistry(1234);
 		System.out.println("Registry created");
-		// If we *know* the registry is running we could skip this (eg run rmiregistry in the start script)
 
-		// TO-DO:
-		// Now rebind the server to the registry (rebind replaces any existing servers bound to the serverURL)
-		// Note - Registry.rebind (as returned by createRegistry / getRegistry) does something similar but
-		// expects different things from the URL field.
+		// Now rebind the server to the registry 
+
 		Naming.rebind(serverURL, server);
 		System.out.println("Bind successful");
 		}catch(MalformedURLException e) {

@@ -25,16 +25,16 @@ public class RMIClient {
 		String urlServer = new String("rmi://" + args[0] + ":1234/RMIServer");
 		int numMessages = Integer.parseInt(args[1]);
 
-		// TO-DO: Initialise Security Manager
+		// Initialise Security Manager
+		if(System.getSecurityManager() == null) {
+			System.setSecurityManager(new SecurityManager());
+		}
 		try {
-			if(System.getSecurityManager() == null) {
-				System.setSecurityManager(new SecurityManager());
-			}
 			System.out.println("Security Manager ready");
-			// TO-DO: Bind to RMIServer
+			// Bind to RMIServer
 			iRMIServer=(RMIServerI) Naming.lookup(urlServer);
 			System.out.println("Bind successful");
-			// TO-DO: Attempt to send messages the specified number of times
+			// Attempt to send messages the specified number of times
 			for(int i = 0; i < numMessages; i++) {
 				MessageInfo msg= new MessageInfo(numMessages,i+1);
 				System.err.println("Try Sending: " + msg.toString());

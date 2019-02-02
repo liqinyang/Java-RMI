@@ -8,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-//import java.util.Arrays;
 
 import common.MessageInfo;
 
@@ -25,9 +24,10 @@ public class UDPServer {
 		byte[]			pacData;
 		DatagramPacket 	pac;
 		
-		// TO-DO: Receive the messages and process them by calling processMessage(...).
+		//Receive the messages and process them by calling processMessage().
 		close=false;
 		try {
+			//keep receiving when last message not recieved
 			while(!close) {
 				pacSize=65507;
 				pacData= new byte[pacSize];
@@ -38,6 +38,7 @@ public class UDPServer {
 			}
 		}catch (SocketTimeoutException e) {
 			System.out.println("Timeout: " + e.getMessage());
+			//If last message lost, still count total when timeout.
 			if(totalMessages!=-1) {
 				for(int i=0;i<totalMessages;i++) {
 					if(receivedMessages[i]!=i+1) {
@@ -54,7 +55,7 @@ public class UDPServer {
 		}catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
 		}
-		//        Use a timeout (e.g. 30 secs) to ensure the program doesn't block forever
+		// Use a timeout (30 secs) to ensure the program doesn't block forever
 
 	}
 
@@ -63,19 +64,20 @@ public class UDPServer {
 		MessageInfo msg = null;
 		System.err.println("Received: " + data);
 
-		// TO-DO: Use the data to construct a new MessageInfo object
+		// Use the data to construct a new MessageInfo object
 		try {
 			msg = new MessageInfo(data);
-			// TO-DO: On receipt of first message, initialise the receive buffer
+			// On receipt of first message, initialise the receive buffer
 			if(totalMessages==-1) {
 				totalMessages=msg.totalMessages;
 				receivedMessages = new int[totalMessages];
 			}
-			// TO-DO: Log receipt of the message
+			// Log receipt of the message
 			receivedMessages[msg.messageNum-1]=msg.messageNum;
-			// TO-DO: If this is the last expected message, then identify
-			//        any missing messages
+			// If this is the last expected message, then identify
+			// any missing messages
 			if(msg.messageNum==totalMessages) {
+				//close if last message received
 				close=true;
 				for(int i=0;i<totalMessages;i++) {
 					if(receivedMessages[i]!=i+1) {
@@ -94,7 +96,7 @@ public class UDPServer {
 
 
 	public UDPServer(int rp) {
-		// TO-DO: Initialise UDP socket for receiving data
+		// Initialise UDP socket for receiving data
 		try {
 			recvSoc = new DatagramSocket(rp);
 		}catch (SocketException e){
@@ -115,7 +117,7 @@ public class UDPServer {
 		}
 		recvPort = Integer.parseInt(args[0]);
 
-		// TO-DO: Construct Server object and start it by calling run().
+		//Construct Server object and start it by calling run().
 		UDPServer s= new UDPServer(recvPort);
 		s.run();
 		
