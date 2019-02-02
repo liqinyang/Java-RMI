@@ -58,6 +58,11 @@ public class UDPClient {
 		while(tries<countTo) {
 			MessageInfo m=new MessageInfo(countTo,tries+1);
 			send(m.toString(),serverAddr,recvPort);
+			try {
+				Thread.sleep(10);
+			}catch(Exception e) {
+				System.out.println("Exception:" + e);
+			}
 			tries++;
 		}
 	}
