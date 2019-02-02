@@ -48,14 +48,10 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 
 	public static void main(String[] args) {
 		RMIServer rmis = null;
-		System.out.println(args.length);
+		//set host IP if public IP provided
 		if(args.length!=0) {
-			System.out.println(args[0]);
-			System.out.println(args[0].length());
 			System.setProperty("java.rmi.server.hostname",args[0]);
 		}
-		System.setProperty("java.rmi.server.hostname","35.246.42.180");
-
 		//  Initialise Security Manager
 		if(System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
@@ -82,9 +78,7 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		// Start  the registry 
 		LocateRegistry.createRegistry(1234);
 		System.out.println("Registry created");
-
 		// Now rebind the server to the registry 
-
 		Naming.rebind(serverURL, server);
 		System.out.println("Bind successful");
 		}catch(MalformedURLException e) {
